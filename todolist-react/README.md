@@ -4,8 +4,10 @@ react@16.8.6 + webpack@4.29.6 + axios@0.19.0 + mockjs@^1.0.1-beta3
 
 ## 项目运行 
 ```
-cd todolist-react-demo
-npm install
+cd todolist-react-demo 
+
+npm install 
+
 npm start
 ```
 
