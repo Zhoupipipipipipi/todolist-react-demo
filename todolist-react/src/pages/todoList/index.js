@@ -1,59 +1,75 @@
 import React, { Component } from 'react'
 import TodoItem from './todoItem'
 import { getInfo } from '../../api/todolist'
+import { Input, Button } from 'antd'
+import store from '../../store'
+
+import {
+  getInputChangeAction,
+  addTodoItem,
+  delItem
+} from '../../store/actionCreators'
 
 class TodoList extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      inputValue: '',
-      todoList: [],
+      inputValue: store.getState().inputValue,
+      todoList: store.getState().todoList,
       add: this.add.bind(this),
       handleChange: this.handleChange.bind(this),
       handleDelete: this.handleDelete.bind(this)
     }
+    this.handleStoreChange = this.handleStoreChange.bind(this)
+    store.subscribe(this.handleStoreChange) // 监听store改变
   }
-  componentWillMount() {
-    this.getInfo()
+  componentDidMount() {
+    // this.getInfo()
   }
   getInfo() {
     getInfo().then(result => {
       console.log(result)
       this.setState({
-        todoList: result.data.todolist
+        todoList: [...result.data.todolist]
       })
     })
   }
   add() {
-    const todoList = [...this.state.todoList, this.state.inputValue]
-    this.setState({
-      todoList,
-      inputValue: ''
-    })
+    const action = addTodoItem()
+    store.dispatch(action)
   }
   handleChange(e) {
-    this.setState({
-      inputValue: e.target.value
-    })
+    const action = getInputChangeAction(e.target.value)
+    store.dispatch(action)
   }
+  handleStoreChange() {
+    this.setState(store.getState())
+  }
+
   handleDelete(index) {
-    const list = [...this.state.todoList]
-    list.splice(index, 1)
-    this.setState({
-      todoList: list
-    })
+    const action = delItem(index)
+    store.dispatch(action)
   }
   render() {
     return (
       <div>
-        <input type="text" value={this.state.inputValue} onChange={this.state.handleChange}/>
-        <button onClick={this.state.add}>add</button>
+        <Input
+          type="text"
+          value={this.state.inputValue}
+          onChange={this.state.handleChange}
+        />
+        <Button onClick={this.state.add}>add</Button>
         <ul>
-          {
-            this.state.todoList.map((item, index) => {
-              return <TodoItem key={index} index={index} content={item} del={this.state.handleDelete} />
-            })
-          }
+          {this.state.todoList.map((item, index) => {
+            return (
+              <TodoItem
+                key={index}
+                index={index}
+                content={item}
+                del={this.state.handleDelete}
+              />
+            )
+          })}
         </ul>
       </div>
     )
