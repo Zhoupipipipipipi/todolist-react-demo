@@ -1,30 +1,30 @@
-import React, { Component } from 'react'
+import React from 'react'
 import TodoItem from './todoItem'
 import { Input, Button } from 'antd'
 
-export default class TodoListUI extends Component {
-  render() {
-    return (
-      <div>
-        <Input
-          type="text"
-          value={this.props.inputValue}
-          onChange={this.props.handleChange}
-        />
-        <Button onClick={this.props.add}>add</Button>
-        <ul>
-          {this.props.todoList.map((item, index) => {
-            return (
-              <TodoItem
-                key={index}
-                index={index}
-                content={item}
-                del={this.props.handleDelete}
-              />
-            )
-          })}
-        </ul>
-      </div>
-    )
-  }
+const TodoListUI = props => {
+  return (
+    <div>
+      <Input
+        type="text"
+        value={props.inputValue}
+        onChange={props.handleChange}
+      />
+      <Button onClick={props.add}>add</Button>
+      <ul>
+        {props.todoList.map((item, index) => {
+          return (
+            <TodoItem
+              key={index}
+              index={index}
+              content={item}
+              del={props.handleDelete}
+            />
+          )
+        })}
+      </ul>
+    </div>
+  )
 }
+
+export default TodoListUI
