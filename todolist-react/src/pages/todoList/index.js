@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import TodoItem from './todoItem'
+import TodoListUI from './TodoListUI'
 import { getInfo } from '../../api/todolist'
-import { Input, Button } from 'antd'
 import store from '../../store'
 
 import {
@@ -28,7 +27,6 @@ class TodoList extends Component {
   }
   getInfo() {
     getInfo().then(result => {
-      console.log(result)
       this.setState({
         todoList: [...result.data.todolist]
       })
@@ -52,26 +50,13 @@ class TodoList extends Component {
   }
   render() {
     return (
-      <div>
-        <Input
-          type="text"
-          value={this.state.inputValue}
-          onChange={this.state.handleChange}
-        />
-        <Button onClick={this.state.add}>add</Button>
-        <ul>
-          {this.state.todoList.map((item, index) => {
-            return (
-              <TodoItem
-                key={index}
-                index={index}
-                content={item}
-                del={this.state.handleDelete}
-              />
-            )
-          })}
-        </ul>
-      </div>
+      <TodoListUI
+        inputValue={this.state.inputValue}
+        handleChange={this.state.handleChange}
+        add={this.state.add}
+        todoList={this.state.todoList}
+        handleDelete={this.state.handleDelete}
+      />
     )
   }
 }
