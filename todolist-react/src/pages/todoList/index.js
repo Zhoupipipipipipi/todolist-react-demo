@@ -2,11 +2,14 @@ import React, { Component } from 'react'
 import TodoListUI from './TodoListUI'
 import { getInfo } from '../../api/todolist'
 import store from '../../store'
+// import axios from 'axios'
 
 import {
   getInputChangeAction,
   addTodoItem,
-  delItem
+  delItem,
+  getTodoList
+  // initListAction
 } from '../../store/actionCreators'
 
 class TodoList extends Component {
@@ -23,7 +26,13 @@ class TodoList extends Component {
     store.subscribe(this.handleStoreChange) // 监听store改变
   }
   componentDidMount() {
+    const action = getTodoList()
+    store.dispatch(action)
     // this.getInfo()
+    /* axios.get('/list.json').then(res => {
+      const action = initListAction(res.data)
+      store.dispatch(action)
+    }) */
   }
   getInfo() {
     getInfo().then(result => {
