@@ -2,9 +2,10 @@ import {
   CHANGE_INPUT_VALIE,
   ADD_TODO_ITEM,
   DEL_ITEM,
-  INIT_LIST_ACTION
+  INIT_LIST_ACTION,
+  GET_INIT_LIST
 } from './actiontypes'
-import axios from 'axios'
+// import axios from 'axios'
 
 export const getInputChangeAction = value => ({
   type: CHANGE_INPUT_VALIE,
@@ -25,11 +26,14 @@ export const initListAction = data => ({
   data
 })
 
-export const getTodoList = () => {
+export const getTodoList = () => ({
+  type: GET_INIT_LIST
+})
+/* export const getTodoList = () => { // 使用redux-thunk
   return dispatch => {
     axios.get('/list.json').then(res => {
       const action = initListAction(res.data)
       dispatch(action)
     })
   }
-}
+} */
