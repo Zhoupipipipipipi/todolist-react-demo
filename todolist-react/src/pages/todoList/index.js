@@ -2,13 +2,14 @@ import React, { Component } from 'react'
 import TodoListUI from './TodoListUI'
 import { getInfo } from '../../api/todolist'
 import store from '../../store'
+import { connect } from 'react-redux'
 // import axios from 'axios'
 
 import {
   getInputChangeAction,
   addTodoItem,
-  delItem,
-  getTodoList
+  delItem
+  // getTodoList
   // initListAction
 } from '../../store/actionCreators'
 
@@ -26,9 +27,9 @@ class TodoList extends Component {
     store.subscribe(this.handleStoreChange) // 监听store改变
   }
   componentDidMount() {
-    const action = getTodoList()
-    store.dispatch(action)
-    // this.getInfo()
+    this.getInfo()
+    // const action = getTodoList()
+    // store.dispatch(action)
     /* axios.get('/list.json').then(res => {
       const action = initListAction(res.data)
       store.dispatch(action)
@@ -36,6 +37,7 @@ class TodoList extends Component {
   }
   getInfo() {
     getInfo().then(result => {
+      console.log(result)
       this.setState({
         todoList: [...result.data.todolist]
       })
@@ -70,4 +72,13 @@ class TodoList extends Component {
   }
 }
 
-export default TodoList
+const mapStateToProps = state => {
+  return {
+    inputValue: state.inputValue
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  null
+)(TodoList)
