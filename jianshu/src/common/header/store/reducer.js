@@ -4,7 +4,10 @@ import { fromJS } from 'immutable'
 /* immutable库 immutable对象 为了避免返回不小心改变了别的属性的state*/
 const defaultState = fromJS({
   focused: false,
-  list: []
+  mouseIn: false,
+  list: [],
+  page: 1,
+  totalPage: 1
 })
 
 export default (state = defaultState, action) => {
@@ -14,7 +17,14 @@ export default (state = defaultState, action) => {
     case actionTypes.CHANGE_FOCUSED:
       return state.set('focused', action.value)
     case actionTypes.GET_SEARCH_LIST:
-      return state.set('list', action.data)
+      return state.merge({
+        list: action.data,
+        totalPage: action.totalPage
+      }) // 同时修改多个属性
+    case actionTypes.CHANGE_MOUSE:
+      return state.set('mouseIn', action.bool)
+    case actionTypes.CHANGE_PAGE:
+      return state.set('page', action.page)
     default:
       return state
   }

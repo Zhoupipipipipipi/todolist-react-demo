@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 import { actionCreators } from './store'
+import { Link } from 'react-router-dom'
 import {
   HeaderWrapper,
   Logo,
@@ -20,19 +21,50 @@ import {
 
 class Header extends Component {
   getSearchInfo() {
-    const { focused, list } = this.props
-    if (focused) {
+    const {
+      focused,
+      list,
+      page,
+      totalPage,
+      mouseIn,
+      handleMouseEnter,
+      handleMouseLeave,
+      changePage
+    } = this.props
+    if (focused || mouseIn) {
+      const pageList = []
+      const jsList = list.toJS() // list 是immutable对象，因此需要用toJS转换为普通对象
+      if (jsList.length) {
+        for (let index = (page - 1) * 10; index < page * 10; index++) {
+          pageList.push(
+            <SearchInfoItem key={jsList[index]}>{jsList[index]}</SearchInfoItem>
+          )
+        }
+      }
       return (
-        <SearchInfo>
+        <SearchInfo
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <SearchInfoTitle>
             热门搜索
-            <SearchChange>换一批</SearchChange>
+            <SearchChange
+              onClick={() => {
+                changePage(page, totalPage, this.spinIcon)
+              }}
+            >
+              <i
+                ref={icon => {
+                  this.spinIcon = icon
+                }}
+                className={'iconfont spin'}
+              >
+                &#xe851;
+              </i>
+              换一批
+            </SearchChange>
           </SearchInfoTitle>
-          <SearchInfoContent>
-            {list.map(item => {
-              return <SearchInfoItem key={item}>{item}</SearchInfoItem>
-            })}
-          </SearchInfoContent>
+          <SearchInfoContent>{pageList}</SearchInfoContent>
         </SearchInfo>
       )
     } else {
@@ -40,11 +72,13 @@ class Header extends Component {
     }
   }
   render() {
-    const { focused, handleInputFoucus, handleInputBlur } = this.props
+    const { focused, handleInputFoucus, handleInputBlur, list } = this.props
 
     return (
       <HeaderWrapper>
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
         <Nav>
           <NavItem className="left">首页</NavItem>
           <NavItem className="left">下载App</NavItem>
@@ -56,11 +90,11 @@ class Header extends Component {
             <CSSTransition in={focused} timeout={200} classNames="slider">
               <NavSearch
                 className={focused ? 'focused' : ''}
-                onFocus={handleInputFoucus}
+                onFocus={() => handleInputFoucus(list)}
                 onBlur={handleInputBlur}
               />
             </CSSTransition>
-            <i className={focused ? 'focused iconfont' : 'iconfont '}>
+            <i className={focused ? 'focused iconfont zoom' : 'iconfont zoom'}>
               &#xe62b;
             </i>
             {this.getSearchInfo()}
@@ -82,19 +116,42 @@ const mapStateToProps = state => {
   // 获取store的数据，将store里面的数据映射到props里面
   return {
     focused: state.getIn(['header', 'focused']),
-    list: state.getIn(['header', 'list'])
+    list: state.getIn(['header', 'list']),
+    mouseIn: state.getIn(['header', 'mouseIn']),
+    page: state.getIn(['header', 'page']),
+    totalPage: state.getIn(['header', 'totalPage'])
   }
 }
 
 const mapDispathToProps = dispatch => {
   // 改变store的数据
   return {
-    handleInputFoucus() {
-      dispatch(actionCreators.getSearchList(true))
+    handleInputFoucus(list) {
+      list.size === 0 && dispatch(actionCreators.getSearchList(true))
       dispatch(actionCreators.changeFoucus(true))
     },
     handleInputBlur() {
       dispatch(actionCreators.changeFoucus(false))
+    },
+    handleMouseEnter() {
+      dispatch(actionCreators.changeMouse(true))
+    },
+    handleMouseLeave() {
+      dispatch(actionCreators.changeMouse(false))
+    },
+    changePage(page, totalPage, icon) {
+      let deg = icon.style.transform
+      if (deg) {
+        deg = parseInt(deg.replace(/[^0-9]/gi, ''))
+      } else {
+        deg = 0
+      }
+      icon.style.transform = 'rotate(' + (deg + 360) + 'deg)'
+      if (page < totalPage) {
+        dispatch(actionCreators.changePage(page + 1))
+      } else {
+        dispatch(actionCreators.changePage(1))
+      }
     }
   }
 }

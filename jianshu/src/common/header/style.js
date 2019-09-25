@@ -7,9 +7,7 @@ export const HeaderWrapper = styled.div`
   border-bottom: 1px solid #f0f0f0;
 `
 
-export const Logo = styled.a.attrs({
-  href: '/'
-})`
+export const Logo = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -42,8 +40,7 @@ export const NavItem = styled.div`
 export const SearchWrapper = styled.div`
   float: left;
   position: relative;
-
-  .iconfont {
+  .zoom {
     position: absolute;
     right: 4px;
     bottom: 4px;
@@ -116,6 +113,15 @@ export const SearchChange = styled.a`
   background-color: transparent;
   border-width: 0;
   padding: 0;
+  cursor: pointer;
+  .spin {
+    display: block;
+    float: left;
+    font-size: 12px;
+    margin-right: 3px;
+    margin-top: 3px;
+    transition: all 0.2s ease-in;
+  }
 `
 export const SearchInfoContent = styled.div`
   font-size: 12px;
