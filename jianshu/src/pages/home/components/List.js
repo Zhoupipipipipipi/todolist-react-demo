@@ -10,7 +10,7 @@ class List extends Component {
     return (
       <div>
         {list.map((item, index) => (
-          <Link key={index} to="/detail">
+          <Link key={index} to={'/detail/' + item.id}>
             <ListItem>
               <ListInfo>
                 <h3 className="title">{item.title}</h3>
