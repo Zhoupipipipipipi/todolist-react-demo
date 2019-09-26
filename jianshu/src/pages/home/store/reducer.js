@@ -18,7 +18,7 @@ const get_index_info = (state, action) => {
 
 const get_more_list = (state, action) => {
   const list = action.data.data.list
-  state.merge({
+  return state.merge({
     articleList: state.get('articleList').concat(fromJS(list)),
     pageIndex: fromJS(action.pageIndex + 1)
   })
